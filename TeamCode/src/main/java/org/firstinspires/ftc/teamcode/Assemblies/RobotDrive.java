@@ -199,7 +199,7 @@ public class RobotDrive {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Adjust readings from Distance Sensors to make sure we are not relying on bad data.
-    // This should be added to the teamDistanceSensor class.
+    // TODO: This should be added to the teamDistanceSensor class.
     public double getDistanceInches(DistanceSensors distanceSensor) {
         double distance = distanceSensor.getDistance();
         if(distance > 20){ // we don't trust readings above 20 inches with our current sensors
