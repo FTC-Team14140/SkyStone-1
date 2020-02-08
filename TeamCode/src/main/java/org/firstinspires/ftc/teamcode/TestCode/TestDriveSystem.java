@@ -54,7 +54,7 @@ public class TestDriveSystem extends LinearOpMode {
             }
             robot.drive.universalJoystick(gamepad1.left_stick_x,
                     gamepad1.left_stick_y,
-                    gamepad1.right_stick_x, 1,
+                    gamepad1.right_stick_x, true,
                     robot.drive.getHeading(), storedHeading);
 
 

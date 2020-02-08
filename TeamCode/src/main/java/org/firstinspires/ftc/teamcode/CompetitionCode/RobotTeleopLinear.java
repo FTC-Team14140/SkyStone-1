@@ -11,9 +11,10 @@ import org.firstinspires.ftc.teamcode.basicLibs.Blinkin;
 import org.firstinspires.ftc.teamcode.basicLibs.TeamGamepad;
 import org.firstinspires.ftc.teamcode.basicLibs.teamUtil;
 
-@TeleOp(name = "RobotTeleopLinear", group ="Competition")
+@TeleOp(name = "RobotTeleopLinear", group = "z")
 public class RobotTeleopLinear extends LinearOpMode {
     public static final double SCALE_DOWN_CONSTANT = 0.3;
+    public static final double SCALE_UP_CONSTANT = 2;
     int level = 0;
     Grabber.GrabberRotation grabberRotation;
     TeamGamepad teamGamePad;
@@ -69,13 +70,13 @@ public class RobotTeleopLinear extends LinearOpMode {
             if (gamepad1.left_trigger > 0.5) {
                 robot.drive.universalJoystick(gamepad1.left_stick_x,
                         gamepad1.left_stick_y,
-                        gamepad1.right_stick_x, 1,
+                        gamepad1.right_stick_x, true,
                         robot.drive.getHeading(), storedHeading);
 
             } else {
                 robot.drive.universalJoystick(gamepad1.left_stick_x,
                         gamepad1.left_stick_y,
-                        gamepad1.right_stick_x, SCALE_DOWN_CONSTANT,
+                        gamepad1.right_stick_x, false,
                         robot.drive.getHeading(), storedHeading);
 
             }
@@ -90,11 +91,11 @@ public class RobotTeleopLinear extends LinearOpMode {
             // this might keep a critical mistake from happening (e.g. dropping the lift on top of a tower)
             if ((robot.liftSystem.state == LiftSystem.LiftSystemState.IDLE) || robot.liftSystem.preparedToGrab) {
                 if (gamepad1.right_bumper) {
-                    robot.liftSystem.grabNoWait( 4000);
+                    robot.liftSystem.grabNoWait(4000);
 
                 }
-                if(gamepad1.y){
-                     robot.liftSystem.capAndGrabNoWait(5000);
+                if (gamepad1.y) {
+                    robot.liftSystem.capAndGrabNoWait(5000);
                 }
 
                 if (gamepad1.left_bumper) {
@@ -131,14 +132,18 @@ public class RobotTeleopLinear extends LinearOpMode {
             }
 
 
-            if (gamepad2.right_bumper && gamepad2.right_trigger > 0.5) {
+            if (gamepad2.right_bumper && gamepad2.right_trigger > 0.5 && gamepad2.left_trigger < 0.5) {
                 robot.liftSystem.putAwayLiftSystemNoWait(5000);
             }
 
 
-
-            if (gamepad2.right_bumper && gamepad2.right_trigger < 0.5) {
-                robot.liftSystem.hoverOverFoundationNoWait(level, grabberRotation, 7000);
+            if (gamepad2.right_bumper && gamepad2.right_trigger < 0.5 && gamepad2.left_trigger < 0.5) {
+                robot.liftSystem.hoverOverFoundationNoWait(level, Grabber.GrabberRotation.INSIDE, 7000);
+                teamUtil.log("tried to deploy");
+                teamUtil.log("level: " + level);
+            }
+            if (gamepad2.right_bumper && gamepad2.right_trigger > 0.5 && gamepad2.left_trigger > 0.5) {
+                robot.liftSystem.hoverOverFoundationNoWait(level, Grabber.GrabberRotation.MIDDLE, 7000);
                 teamUtil.log("tried to deploy");
                 teamUtil.log("level: " + level);
             }
@@ -147,12 +152,16 @@ public class RobotTeleopLinear extends LinearOpMode {
                 robot.liftSystem.prepareToGrabNoWait(9000, Grabber.GrabberRotation.INSIDE);
             }
 
-            if(gamepad2.left_bumper && gamepad2.left_trigger > 0.5 && gamepad2.right_trigger > 0.5){
+            if (gamepad2.left_bumper && gamepad2.left_trigger > 0.5 && gamepad2.right_trigger > 0.5) {
                 robot.liftSystem.prepareToGrabNoWait(9000, Grabber.GrabberRotation.MIDDLE);
             }
 
             if (gamepad2.right_stick_button) {
-                robot.liftSystem.drop();
+                if (robot.liftSystem.grabber.rotation == Grabber.GrabberRotation.INSIDE) {
+                    robot.liftSystem.drop();
+                } else {
+                    robot.liftSystem.grabber.narrowOpen();
+                }
             }
             if (teamGamePad.gamepad2ABounced()) {
                 robot.liftSystem.elevatorDown();
@@ -160,18 +169,17 @@ public class RobotTeleopLinear extends LinearOpMode {
             if (gamepad2.y) {
                 robot.liftSystem.grabber.dropCapstone();
             }
-            if(gamepad2.b){
+            if (gamepad2.b) {
                 robot.liftSystem.hoverOverFoundationNoWait(level, Grabber.GrabberRotation.MIDDLE, 7000);
             }
 
             if (gamepad2.left_stick_y < -0.8) {
                 robot.liftSystem.lift.moveElevatorUpSlowly();
-            } else  if (gamepad2.left_stick_y > 0.8) {
+            } else if (gamepad2.left_stick_y > 0.8) {
                 robot.liftSystem.lift.moveElevatorDownSlowly();
             } else {
                 robot.liftSystem.lift.manualHoldElevator(); // this will stop any other elevator movement dead in its tracks...
             }
-
 
 
 /////////////////////////////////////////////////////////////////////
@@ -204,6 +212,18 @@ public class RobotTeleopLinear extends LinearOpMode {
 
             } else if (level == 6) {
                 teamUtil.theBlinkin.setSignal(Blinkin.Signals.LEVEL_6);
+
+            } else if (level == 7) {
+                teamUtil.theBlinkin.setSignal(Blinkin.Signals.LEVEL_7);
+
+            } else if (level == 8) {
+                teamUtil.theBlinkin.setSignal(Blinkin.Signals.LEVEL_8);
+
+            } else if (level == 9) {
+                teamUtil.theBlinkin.setSignal(Blinkin.Signals.LEVEL_9);
+
+            } else if (level == 10) {
+                teamUtil.theBlinkin.setSignal(Blinkin.Signals.LEVEL_10);
 
             }
 

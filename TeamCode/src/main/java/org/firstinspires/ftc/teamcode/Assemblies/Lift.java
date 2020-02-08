@@ -22,7 +22,7 @@ public class Lift {
 
     // Constants for the base lift (when using the encoder)
     private final int LIFT_BASE_TOP_LIMIT_ENCODER_CLICKS = 2725;
-    private final int LIFT_BASE_SLIGHTLY_UP_ENCODER_CLICKS = 2725/9; //10 degrees
+    private final int LIFT_BASE_SLIGHTLY_UP_ENCODER_CLICKS = 2725 / 9; //10 degrees
     private final int LIFT_BASE_SAFE_TO_ELEVATE = 2000;
 
     // Constants for the elevator spindles
@@ -298,6 +298,7 @@ public class Lift {
                 safeToElevate = true;
             }
         }
+        stallLiftBaseUp(); //TODO: TRY DIS
         shutDownLiftBase();
         teamUtil.log("LiftBase is Up");
         teamUtil.log("LiftBaseEncoder: " + liftBase.getCurrentPosition());
@@ -319,7 +320,7 @@ public class Lift {
             liftState = LiftState.IDLE;
             return;
         }
-        int mockTarget = LIFT_BASE_SLIGHTLY_UP_ENCODER_CLICKS *2;
+        int mockTarget = LIFT_BASE_SLIGHTLY_UP_ENCODER_CLICKS * 2;
         liftBase.setPower(0);
         liftBase.setTargetPosition(mockTarget);
         liftBase.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -393,6 +394,23 @@ public class Lift {
         moveBaseUpUsingEncoders(power, timeOut);
     }
 
+    public void stallLiftBaseUp() {
+        liftBase.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        liftBase.setPower(0.4);
+        teamUtil.sleep(250); // let them get going
+
+        do {
+            long lastLiftBase = liftBase.getCurrentPosition();
+            teamUtil.sleep(250);
+            // if things aren't moving, we have stalled
+            if (liftBase.getCurrentPosition() == lastLiftBase) {
+                liftBase.setPower(0);
+                liftBase.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                return;
+            }
+
+        } while (true);
+    }
 
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

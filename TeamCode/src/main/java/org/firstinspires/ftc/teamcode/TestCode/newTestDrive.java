@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.TestCode;
 
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -9,7 +10,7 @@ import org.firstinspires.ftc.teamcode.basicLibs.Blinkin;
 import org.firstinspires.ftc.teamcode.basicLibs.teamUtil;
 
 @TeleOp(name = "NEW TestDriveSystem")
-//@Disabled
+@Disabled
 public class newTestDrive extends LinearOpMode{
 
         public static double MAX_POWER = 1;
@@ -34,6 +35,39 @@ public class newTestDrive extends LinearOpMode{
             drive.initSensors(false);
             drive.resetHeading();
         }
+
+        public void moveToDistanceFailover (double distance, double initialTicsPerSecond, double heading, boolean moveBackIfNeeded, long timeOut) {
+            double frontLeft = drive.frontLeftDistance.getDistance();
+            double frontRight = drive.frontRightDistance.getDistance();
+            teamUtil.log("FL:"+frontLeft+" FR:"+frontRight );
+
+            if (frontLeft > 0 && frontLeft < 50) {
+                drive.newMoveToDistance(drive.frontLeftDistance, distance, initialTicsPerSecond, heading, moveBackIfNeeded, timeOut);
+            } else if (frontRight > 0 && frontRight < 50) {
+                teamUtil.log("FAILING OVER TO FRONT RIGHT DISTANCE SENSOR");
+                drive.newMoveToDistance(drive.frontRightDistance, distance, initialTicsPerSecond, heading, moveBackIfNeeded, timeOut);
+            } else {
+                teamUtil.log("BOTH FRONT DISTANCE SENSORS FAILED");
+            }
+        }
+
+        public void stressTestDistanceSensors() {
+            moveToDistanceFailover( 5, 2200, 0, false, 5000);
+            moveToDistanceFailover( 10, 2200, 0, true, 5000);
+            drive.newRotateTo(270);
+            drive.newAccelerateInchesForward(2200,100,268,5000);
+            moveToDistanceFailover( 5, 2200, 270, false, 5000);
+            moveToDistanceFailover( 10, 2200, 270, true, 5000);
+            drive.newRotateTo(0);
+            moveToDistanceFailover(5, 2200, 0, false, 5000);
+            moveToDistanceFailover( 10, 2200, 0, true, 5000);
+            drive.newRotateTo(90);
+            drive.newAccelerateInchesForward(2200,100,88,5000);
+            moveToDistanceFailover(5, 2200, 90, false, 5000);
+            moveToDistanceFailover(10, 2200, 90, true, 5000);
+            drive.newRotateTo(0);
+        }
+
         @Override
         public void runOpMode() throws InterruptedException {
             initialize();
@@ -47,7 +81,7 @@ public class newTestDrive extends LinearOpMode{
                 }
                 drive.universalJoystick(gamepad1.left_stick_x,
                         gamepad1.left_stick_y,
-                        gamepad1.right_stick_x, 1,
+                        gamepad1.right_stick_x, true,
                         drive.getHeading(), storedHeading);
 
 
@@ -83,7 +117,7 @@ public class newTestDrive extends LinearOpMode{
                         sleep(250);
                     }
                 } else if (gamepad1.y) {
-                    drive.newMoveToDistance(leftSensor ? drive.frontLeftDistance : drive.frontRightDistance, targetDistance, 500, 0, true, 60000);
+                    drive.newMoveToDistance(leftSensor ? drive.frontLeftDistance : drive.frontRightDistance, targetDistance, 1000, 0, true, 60000);
                 } else
                 if (gamepad1.dpad_up) {
                     drive.newRotateTo(RobotDrive.RobotRotation.TOWARDS_FIELD);
@@ -142,6 +176,9 @@ public class newTestDrive extends LinearOpMode{
                     }
                     long seconds = (System.currentTimeMillis()-start)/1000;
                     teamUtil.log("Num Readings:" + readings + " Seconds:" + seconds +" Readings/Sec:" + (readings/seconds));
+                }
+                if (gamepad2.x) {
+                    stressTestDistanceSensors();
                 }
 
                 teamUtil.telemetry.addData("heading:", drive.getHeading());

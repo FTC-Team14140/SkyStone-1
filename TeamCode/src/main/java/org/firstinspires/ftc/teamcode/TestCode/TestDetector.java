@@ -52,12 +52,17 @@ public class TestDetector extends LinearOpMode {
             if (totals[1] > 0 && totals[2]==0 && totals[3] == 0) {
                 teamUtil.theBlinkin.setSignal(Blinkin.Signals.RED_PATH_1);
                 teamUtil.log( "PATH: "+1);
+                telemetry.addLine("path 1");
             } else if (totals[3] > totals[2]*2) {
                 teamUtil.theBlinkin.setSignal(Blinkin.Signals.RED_PATH_3);
                 teamUtil.log( "PATH: "+3);
+                telemetry.addLine("path 3");
+
             } else {
                 teamUtil.theBlinkin.setSignal(Blinkin.Signals.RED_PATH_2);
                 teamUtil.log( "PATH: "+2);
+                telemetry.addLine("path 2");
+
             }
         }
 

@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.basicLibs.teamColorSensor;
 import org.firstinspires.ftc.teamcode.basicLibs.teamUtil;
 
 @Autonomous(name = "mechnumDriveTest")
-//@Disabled
+@Disabled
 public class mechnumDriveTest extends LinearOpMode {
 
     // Stuff that belongs in a drive class

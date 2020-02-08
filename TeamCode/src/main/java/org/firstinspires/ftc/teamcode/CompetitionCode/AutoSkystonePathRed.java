@@ -6,7 +6,7 @@ import org.firstinspires.ftc.teamcode.Assemblies.Robot;
 import org.firstinspires.ftc.teamcode.basicLibs.Blinkin;
 import org.firstinspires.ftc.teamcode.basicLibs.SkystoneDetector;
 import org.firstinspires.ftc.teamcode.basicLibs.teamUtil;
-@Autonomous(name="RedDoubleSkystone", group ="ULTIMATEPOWER")
+@Autonomous(name="RedDoubleSkystone", group ="Skystone")
 
 
 public class AutoSkystonePathRed extends LinearOpMode {

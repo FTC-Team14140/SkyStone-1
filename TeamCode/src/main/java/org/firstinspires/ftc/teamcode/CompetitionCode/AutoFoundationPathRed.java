@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.Assemblies.Robot;
 import org.firstinspires.ftc.teamcode.basicLibs.Blinkin;
 import org.firstinspires.ftc.teamcode.basicLibs.teamUtil;
 
-@Autonomous(name = "RedFoundation", group = "Red")
+@Autonomous(name = "RedFoundation", group = "f")
 
 public class AutoFoundationPathRed extends LinearOpMode {
 

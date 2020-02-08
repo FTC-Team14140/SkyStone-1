@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import org.firstinspires.ftc.teamcode.Assemblies.Grabber;
 import org.firstinspires.ftc.teamcode.basicLibs.TeamGamepad;
 
-@TeleOp(name = "MoveLiftBase")
+@TeleOp(name = "MoveLiftBase", group="a")
 public class MoveLiftBase extends OpMode {
 
     private DcMotor liftBase;

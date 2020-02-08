@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.CompetitionCode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Assemblies.Grabber;
 import org.firstinspires.ftc.teamcode.Assemblies.Robot;
@@ -9,7 +10,7 @@ import org.firstinspires.ftc.teamcode.basicLibs.Blinkin;
 import org.firstinspires.ftc.teamcode.basicLibs.TeamGamepad;
 import org.firstinspires.ftc.teamcode.basicLibs.teamUtil;
 
-@Autonomous(name="ResetRobot")
+@TeleOp(name="ResetRobot", group="a")
 
 public class ResetRobot extends LinearOpMode {
     public static final double SCALE_DOWN_CONSTANT = 0.3;
@@ -20,16 +21,20 @@ public class ResetRobot extends LinearOpMode {
     Robot robot;
 
     public void initialize() {
+
         teamUtil.init(this);
-        teamUtil.theBlinkin.setSignal(Blinkin.Signals.INIT_RED);
+        teamUtil.telemetry.addLine("Initializing Op Mode...please wait");
+        teamUtil.telemetry.update();
+        teamUtil.theBlinkin.setSignal(Blinkin.Signals.YELLOW);
+
         robot = new Robot(this);
 
         teamGamePad = new TeamGamepad(this);
 
-        robot.init(true);
+        robot.init(false);
+        robot.latch.latchUp();
         teamUtil.theBlinkin.setSignal(Blinkin.Signals.READY_TO_START);
         teamUtil.initPerf();
-        robot.latch.latchUp(); // move latches up at start of teleop
 
     }
 
@@ -37,13 +42,10 @@ public class ResetRobot extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
 
-        teamUtil.telemetry.addLine("Initializing Op Mode...please wait");
-        teamUtil.telemetry.update();
+
         initialize();
         grabberRotation = Grabber.GrabberRotation.INSIDE;
 
-        teamUtil.telemetry.addLine("Robot Reset");
-        teamUtil.telemetry.update();
 //        teamUtil.nukeRobot();
         waitForStart();
     }

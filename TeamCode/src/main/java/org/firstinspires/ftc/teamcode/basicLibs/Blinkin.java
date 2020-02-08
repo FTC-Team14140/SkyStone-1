@@ -32,6 +32,10 @@ public class Blinkin {
         LEVEL_4,
         LEVEL_5,
         LEVEL_6,
+        LEVEL_7,
+        LEVEL_8,
+        LEVEL_9,
+        LEVEL_10,
 
         RED_AUTO,
         BLUE_AUTO,
@@ -43,7 +47,7 @@ public class Blinkin {
         RED_PATH_3,
         BLUE_PATH_1,
         BLUE_PATH_2,
-        BLUE_PATH_3
+        BLUE_PATH_3,
 
     }
 
@@ -135,7 +139,22 @@ public class Blinkin {
                 current = RevBlinkinLedDriver.BlinkinPattern.VIOLET;
                 blinkinLedDriver.setPattern(current);
                 break;
-
+            case LEVEL_7:
+                current = RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_FOREST_PALETTE;
+                blinkinLedDriver.setPattern(current);
+                break;
+            case LEVEL_8:
+                current = RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_OCEAN_PALETTE;
+                blinkinLedDriver.setPattern(current);
+                break;
+            case LEVEL_9:
+                current = RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_RAINBOW_PALETTE;
+                blinkinLedDriver.setPattern(current);
+                break;
+            case LEVEL_10:
+                current = RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_PARTY_PALETTE;
+                blinkinLedDriver.setPattern(current);
+                break;
             case RED_AUTO:
                 current = RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_LAVA_PALETTE;
                 blinkinLedDriver.setPattern(current);

@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.basicLibs.TeamGamepad;
 import org.firstinspires.ftc.teamcode.basicLibs.teamUtil;
 
 @TeleOp(name = "TestGrabber")
+@Disabled
 
 public class TestGrabber extends LinearOpMode {
 

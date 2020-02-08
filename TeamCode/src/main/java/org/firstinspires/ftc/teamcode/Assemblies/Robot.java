@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.basicLibs.Blinkin;
 import org.firstinspires.ftc.teamcode.basicLibs.SkystoneDetector;
+import org.firstinspires.ftc.teamcode.basicLibs.runningVoteCount;
 import org.firstinspires.ftc.teamcode.basicLibs.teamUtil;
 
 // A class to encapsulate the entire 
@@ -53,6 +54,8 @@ public class Robot {
         drive.initDriveMotors();
         if (usingDistanceSensors) {
             drive.initSensors(false);
+        } else{
+            drive.initSensors(true);
         }
         drive.resetHeading();
         latch.initLatch();
@@ -243,37 +246,80 @@ public class Robot {
         detector = new SkystoneDetector(telemetry, hardwareMap);
         detector.initDetector();
         detector.activateDetector();
+        runningVoteCount voteCount = new runningVoteCount(3000);
+
 
         teamUtil.telemetry.addLine("Ready to Start");
         teamUtil.telemetry.update();
 
         // Start detecting but wait for start of match to move
         while (!teamUtil.theOpMode.opModeIsActive() && !teamUtil.theOpMode.isStopRequested()) {
+            teamUtil.sleep(200);
 
-            int detected = (RED ? detector.detectRed() : detector.detectBlue());
-            if (detected > 0) {
-                path = detected;
+            int vote = RED ? detector.detectRed() : detector.detectBlue();
+            if (vote > 0) {
+                voteCount.vote(vote);
             }
-            if (RED) {
-                switch (path) {
-                    case 1 : teamUtil.theBlinkin.setSignal(Blinkin.Signals.RED_PATH_1); break;
-                    case 2 : teamUtil.theBlinkin.setSignal(Blinkin.Signals.RED_PATH_2); break;
-                    case 3 : teamUtil.theBlinkin.setSignal(Blinkin.Signals.RED_PATH_3); break;
-                }
-            } else {
-                switch (path) {
-                    case 1:
-                        teamUtil.theBlinkin.setSignal(Blinkin.Signals.BLUE_PATH_1);
-                        break;
-                    case 2:
-                        teamUtil.theBlinkin.setSignal(Blinkin.Signals.BLUE_PATH_2);
-                        break;
-                    case 3:
-                        teamUtil.theBlinkin.setSignal(Blinkin.Signals.BLUE_PATH_3);
-                        break;
+            int[] pathVotes = voteCount.getTotals();
 
+
+            teamUtil.log(" Totals:"+pathVotes[1]+"/"+pathVotes[2]+"/"+pathVotes[3]);
+
+            if (pathVotes[1] > 0 && pathVotes[2]==0 && pathVotes[3] == 0) { //if we get NO path 2 or path 3 votes, it's path 1
+                if(RED){
+                    teamUtil.theBlinkin.setSignal(Blinkin.Signals.RED_PATH_1);
+                } else{
+                    teamUtil.theBlinkin.setSignal(Blinkin.Signals.BLUE_PATH_1);
                 }
+                teamUtil.log( "PATH: "+1);
+                telemetry.addLine("path 1");
+            } else if (pathVotes[3] > pathVotes[2]*2) { //if we get tons more path 3 than path 2 votes, it's path 3
+                if(RED){
+                    teamUtil.theBlinkin.setSignal(Blinkin.Signals.RED_PATH_3);
+                } else{
+                    teamUtil.theBlinkin.setSignal(Blinkin.Signals.BLUE_PATH_3);
+                }
+                teamUtil.log( "PATH: "+3);
+                telemetry.addLine("path 3");
+
+            } else { //path 2 gets crappy data so if no other conditions fit, it's path 2
+                if(RED){
+                    teamUtil.theBlinkin.setSignal(Blinkin.Signals.RED_PATH_2);
+                } else{
+                    teamUtil.theBlinkin.setSignal(Blinkin.Signals.BLUE_PATH_2);
+                }
+                teamUtil.log( "PATH: "+2);
+                telemetry.addLine("path 2");
+
             }
+
+//            int detected = (RED ? detector.detectRed() : detector.detectBlue());
+//            if (detected > 0) {
+//                path = detected;
+//            }
+//            if (RED) {
+//                switch (path) {
+//                    case 1 : teamUtil.theBlinkin.setSignal(Blinkin.Signals.RED_PATH_1); break;
+//                    case 2 : teamUtil.theBlinkin.setSignal(Blinkin.Signals.RED_PATH_2); break;
+//                    case 3 : teamUtil.theBlinkin.setSignal(Blinkin.Signals.RED_PATH_3); break;
+//                }
+//            } else {
+//                switch (path) {
+//                    case 1:
+//                        teamUtil.theBlinkin.setSignal(Blinkin.Signals.BLUE_PATH_1);
+//                        break;
+//                    case 2:
+//                        teamUtil.theBlinkin.setSignal(Blinkin.Signals.BLUE_PATH_2);
+//                        break;
+//                    case 3:
+//                        teamUtil.theBlinkin.setSignal(Blinkin.Signals.BLUE_PATH_3);
+//                        break;
+//
+//                }
+//            }
+
+
+
         }
         if(RED) {
             teamUtil.theBlinkin.setSignal(Blinkin.Signals.RED_AUTO);
@@ -374,7 +420,7 @@ public class Robot {
         switch (path) { // TODO: OR, we could go back to finding the tape line as we cross it and moving a set distance from there...
             case 3:
             case 2:
-                distance = (RED ? 60 : 60/*TODO*/);
+                distance = (RED ? 67 : 65/*TODO*/);
                 break;// TODO RED + 8?
 //            case 1 : distance = (RED ? 60  :60/*TODO*/); break;// TODO Need to think about this case carefully!
         }
@@ -382,19 +428,22 @@ public class Robot {
         switch (path) {
             case 3:
             case 2:
-                distance = (RED ? 13.5 : 13.5/*TODO*/);
+                distance = (RED ? 13.5 : 15.5/*TODO*/);
                 break; // TODO RED - 8?
 //            case 1 : distance = (RED ? 10.5  :0/*TODO*/); break; // TODO Need to think about this case carefully!
         }
-        drive.newMoveToDistance(drive.frontRightDistance, distance, 1500, RED ? 89 : 271, true, 4000);
+        drive.moveToDistanceFailover(distance, 1500, RED ? 89 : 271, true, 4000); //TODO: line up to wall before picking up skystone
         liftSystem.prepareToGrabNoWait(3500, Grabber.GrabberRotation.INSIDE);
         drive.newRotateTo(RobotDrive.RobotRotation.TOWARDS_FIELD);
         //strafe a tad if we're doing path 2 to line up to the stone
+
+
+
         if (path == 2) {
             if (RED) {
                 drive.moveInchesLeft(0.35, 7, 2300);
             } else {
-                drive.moveInchesRight(0.35, 7, 2300);
+                drive.moveInchesRight(0.35, 5.5, 2300);
             }
         }
 
