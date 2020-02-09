@@ -346,7 +346,7 @@ public class LiftSystem {
             // waiting to elevate
         }
         if (!lift.timedOut && teamUtil.keepGoing(timeOutTime)) {
-            lift.moveElevatorToLevel(level, 3000);
+            lift.moveElevatorToLevel(level, 5000);
         }
         state = LiftSystemState.HOVER;
         timedOut = (System.currentTimeMillis() > timeOutTime) || lift.timedOut;

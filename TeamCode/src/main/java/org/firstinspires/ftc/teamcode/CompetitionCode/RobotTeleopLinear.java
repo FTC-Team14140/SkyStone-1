@@ -51,7 +51,7 @@ public class RobotTeleopLinear extends LinearOpMode {
         teamUtil.telemetry.addLine("Ready to Stack :D");
         teamUtil.telemetry.update();
         waitForStart();
-        robot.latch.latchUp(); // move latches up at start of teleop
+        robot.latch.latchUp();  // move latches up at start of teleop
 
         while (opModeIsActive()) {
 
