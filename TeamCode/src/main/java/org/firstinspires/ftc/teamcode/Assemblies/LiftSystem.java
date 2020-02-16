@@ -43,7 +43,7 @@ public class LiftSystem {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // move the lift system down and into stowed position while calibrating
-    public void initLiftSystem() {
+    public void initLiftSystem(boolean haveNotCalibrated) {
         grabber.initGrabber();
         lift.initLift();
         if (!lift.liftBaseIsDown()) {
@@ -53,7 +53,11 @@ public class LiftSystem {
         }
         // move the lift down
         lift.moveLiftBaseDown(.3, 8000);
-        lift.calibrateSpindles();
+        if(haveNotCalibrated) {
+            lift.calibrateSpindles();
+        }else{
+            lift.spindlesCalibrated = true;
+        }
         if (grabber.rotation != Grabber.GrabberRotation.INSIDE) {  // rotate to inside position
 
             // WARNING!  if the lift base was down and the paddles are in a position that can't rotate

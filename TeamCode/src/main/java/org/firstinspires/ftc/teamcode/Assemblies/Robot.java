@@ -19,6 +19,11 @@ public class Robot {
     public static final double AUTOINTAKE_SIDEWAYS_POWER = 0.33;
     int path;
     public boolean hasBeenInitialized = false;
+    private static boolean justRanAuto;
+
+    static{
+        justRanAuto = false;
+    }
 
     public LiftSystem liftSystem;
     public RobotDrive drive;
@@ -49,7 +54,8 @@ public class Robot {
     // Call this before first use!
     public void init(boolean usingDistanceSensors) {
         teamUtil.log("Initializing Robot");
-        liftSystem.initLiftSystem();
+        liftSystem.initLiftSystem(!justRanAuto);
+        justRanAuto = false;
         drive.initImu();
         drive.initDriveMotors();
         if (usingDistanceSensors) {
@@ -208,6 +214,7 @@ public class Robot {
             }
         }
         drive.stopMotors();
+        justRanAuto = true;
     }
 
 
@@ -271,6 +278,7 @@ public class Robot {
                 } else{
                     teamUtil.theBlinkin.setSignal(Blinkin.Signals.BLUE_PATH_1);
                 }
+                path = 1;
                 teamUtil.log( "PATH: "+1);
                 telemetry.addLine("path 1");
             } else if (pathVotes[3] > pathVotes[2]*2) { //if we get tons more path 3 than path 2 votes, it's path 3
@@ -279,6 +287,7 @@ public class Robot {
                 } else{
                     teamUtil.theBlinkin.setSignal(Blinkin.Signals.BLUE_PATH_3);
                 }
+                path = 3;
                 teamUtil.log( "PATH: "+3);
                 telemetry.addLine("path 3");
 
@@ -288,6 +297,7 @@ public class Robot {
                 } else{
                     teamUtil.theBlinkin.setSignal(Blinkin.Signals.BLUE_PATH_2);
                 }
+                path = 2;
                 teamUtil.log( "PATH: "+2);
                 telemetry.addLine("path 2");
 
@@ -397,6 +407,7 @@ public class Robot {
 
         //if it's path 1, we give up on double skystone ¯\_(ツ)_/¯
         if (path == 1) {
+//            drive.moveInchesRight(0.5, 18, 3000); //TODO: OUT OF ORDER AUTO
             while (!drive.bottomColor.isOnTape()) {
                 if (RED) {
                     drive.driveLeft(0.75);
@@ -478,10 +489,10 @@ public class Robot {
         // Deliver the second stone
         switch (path) { // TODO: OR, we could go back to finding the tape line as we cross it and moving a set distance from there...
             case 3:
-                distance = (RED ? 66.5 : 66.5/*TODO*/);
+                distance = (RED ? 66.5 : 66.5/*TODO*/); //TODO: OUT OF ORDER AUTO: 78.5 both sides
                 break;
             case 2:
-                distance = (RED ? 70.5 : 70.5/*TODO*/);
+                distance = (RED ? 70.5 : 70.5/*TODO*/); //TODO: OUT OF ORDER AUTO: 82.5 both sides
                 break;// TODO RED + 8?
             case 1:
                 distance = (RED ? 60.5 : 60.5/*TODO*/);
@@ -498,75 +509,9 @@ public class Robot {
             drive.driveBackward(0.75);
         }
         drive.stopMotors();
+        justRanAuto = true;
         /////////////////////////////////////////////////////////
         // Park
-
-
-
-
-
-
-
-
-
-
-
-
-/*        drive.accelerateToSpeedRight(0, 0.75);
-        while (!drive.bottomColor.isOnTape()) {
-            drive.driveRight(0.75);
-        }
-        drive.decelerateInchesRight(0.75, 6);
-        liftSystem.grabber.slightlyOpenGrabber();
-        drive.rotateToZero();
-        teamUtil.sleep(750);
-        drive.accelerateToSpeedLeft(0.35, 1);
-        while (!drive.bottomColor.isOnTape()) {
-            drive.driveLeft(1);
-        }
-
-        if (path == 3) {
-            drive.decelerateInchesLeft(1, 44);
-        } else if (path == 2) {
-            drive.decelerateInchesLeft(1, 50);
-        } else if (path == 1) {
-            drive.stopMotors();
-            teamUtil.log("path 1, stopping motors");
-            return;
-        }
-
-
-        liftSystem.prepareToGrabNoWait(4000);
-        drive.rotateToZero();
-        drive.moveToDistance(drive.frontLeftDistance, 9, 0.45, 3000);
-        while(!liftSystem.preparedToGrab){
-            teamUtil.sleep(100);
-        }
-        drive.moveToDistance(drive.frontLeftDistance, 6, 0.3, 3000);
-        drive.accelerateInchesForward(0.65, 7, 2000);
-        liftSystem.grabAndStowNoWait(4500);
-        teamUtil.sleep(750);
-
-        if(path == 3){
-            drive.moveInchesBackward(0.35, 9, 3000); //TODO: this didn't work on path 3...? --> fixed it, awaiting next download 1/10/19 4:12 PM
-        } else if(path == 2){
-            drive.moveInchesBackward(0.35, 10, 3000);
-        }
-        drive.rotateToZero();
-        drive.accelerateToSpeedRight(0, 1);
-        while (!drive.bottomColor.isOnTape()) {
-            drive.driveRight(1);
-        }
-        drive.decelerateInchesRight(1, 6);
-        liftSystem.grabber.slightlyOpenGrabber();
-        drive.rotateToZero();
-        while (!drive.bottomColor.isOnTape()) {
-            drive.driveLeft(0.75);
-        }
-        drive.stopMotors();
-*/
-
-
     }
 
 

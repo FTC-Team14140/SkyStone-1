@@ -54,8 +54,8 @@ public class Lift {
 
     private LiftState liftState = LiftState.IDLE;
     private ElevatorState elevatorState = ElevatorState.IDLE;
+    public boolean spindlesCalibrated;
 
-    private boolean spindlesCalibrated = false;
     private boolean baseCalibrated = false;
     private boolean safeToElevate = false;
     boolean timedOut = false;
@@ -466,6 +466,8 @@ public class Lift {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // call this method during init while the liftbase is down to calibrate the spindles
     public void calibrateSpindles() {
+
+
         teamUtil.log("Calibrating Spindles");
         if (!liftBaseIsDown()) {
             teamUtil.log("ERROR: calibrateSpindles called while lift base wasn't down");

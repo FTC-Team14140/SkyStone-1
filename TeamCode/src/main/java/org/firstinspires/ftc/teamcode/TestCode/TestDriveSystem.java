@@ -13,7 +13,6 @@ import org.firstinspires.ftc.teamcode.basicLibs.teamUtil;
 
 
 @TeleOp(name = "TestDriveSystem")
-@Disabled
 public class TestDriveSystem extends LinearOpMode {
 
     // lift system code - should be in its own assembly class...
@@ -111,6 +110,7 @@ public class TestDriveSystem extends LinearOpMode {
             teamUtil.telemetry.addData("ColorSensor: ", robot.drive.bottomColor.getReading());
             teamUtil.telemetry.addData("ColorSensor BlueTape?: ", robot.drive.bottomColor.onBlue());
             teamUtil.telemetry.addData("ColorSensor RedTape?: ", robot.drive.bottomColor.onRed());
+
 
             robot.drive.distanceTelemetry();
             robot.drive.telemetryDriveEncoders();

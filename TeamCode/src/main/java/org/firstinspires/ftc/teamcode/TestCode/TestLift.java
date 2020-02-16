@@ -24,7 +24,7 @@ public class TestLift extends LinearOpMode {
         teamUtil.init(this);
         teamUtil.theBlinkin.setSignal(Blinkin.Signals.INIT_RED);
         liftSystem = new LiftSystem(hardwareMap, telemetry);
-        liftSystem.initLiftSystem();
+        liftSystem.initLiftSystem(true);
         teamUtil.theBlinkin.setSignal(Blinkin.Signals.OFF);
 
     }

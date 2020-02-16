@@ -38,7 +38,6 @@ public class RobotTeleop extends OpMode {
 
         latch.initLatch();
 
-        liftSystem.initLiftSystem();
 
         teamUtil.initPerf();
         robot.resetHeading();

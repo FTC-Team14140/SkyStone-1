@@ -28,5 +28,7 @@ public class MoveLiftBase extends OpMode {
         } else {
             liftBase.setPower(0);
         }
+        telemetry.addLine("encoder:" + liftBase.getCurrentPosition());
+        telemetry.update();
     }
 }
