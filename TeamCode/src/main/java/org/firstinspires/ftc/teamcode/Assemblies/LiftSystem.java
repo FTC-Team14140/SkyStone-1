@@ -314,6 +314,38 @@ public class LiftSystem {
         }
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public void outsideCap(){
+        if(state == LiftSystemState.HOVER){
+            if (!grabber.isSafeToRotate()) { // but don't try to rotate if the paddles are in a bad position
+                grabber.grabberRotatePos();
+                teamUtil.log("Moving paddles to safe position to rotate");
+                teamUtil.pause(750);
+            }
+            grabber.rotate(Grabber.GrabberRotation.OUTSIDE);
+            teamUtil.pause(1000);
+            grabber.grabberStow();
+        } else{
+            teamUtil.log("WARNING: outsideCap was called when lift was not in hover");
+
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public void outsideCapNoWait() {
+            teamUtil.log("Launching Thread to Outside Cap");
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    outsideCap();
+                }
+            });
+            thread.start();
+    }
+
+
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // get ready to drop a stone (presumbably being held when this is called) at the specified level

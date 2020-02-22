@@ -143,15 +143,15 @@ public class RobotDrive {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void distanceTelemetry() {
-        teamUtil.telemetry.addData("frontLeftDistance", getDistanceInches(frontLeftDistance));
-        teamUtil.telemetry.addData("frontMiddleDistance", frontmiddleDistance.getDistance(DistanceUnit.CM));
-        teamUtil.telemetry.addData("frontRightDistance", getDistanceInches(frontRightDistance));
+        teamUtil.telemetry.addData("frontLeftDistance:", "%.1f %b", getDistanceInches(frontLeftDistance),frontLeftDistance.didTimeOut());
+        teamUtil.telemetry.addData("frontMiddleDistance:", "%.1f", frontmiddleDistance.getDistance(DistanceUnit.CM));
+        teamUtil.telemetry.addData("frontRightDistance:", "%.1f %b", getDistanceInches(frontRightDistance),frontRightDistance.didTimeOut());
         if (!frontSensorsOnly) {
-            teamUtil.telemetry.addData("leftDistance", getDistanceInches(leftDistanceSensor));
-            teamUtil.telemetry.addData("rightDistance", getDistanceInches(rightDistanceSensor));
-            teamUtil.telemetry.addData("backDistance", getDistanceInches(backDistanceSensor));
+            teamUtil.telemetry.addData("leftDistance:", "%.1f %b", getDistanceInches(leftDistanceSensor),leftDistanceSensor.didTimeOut());
+            teamUtil.telemetry.addData("rightDistance:", "%.1f %b", getDistanceInches(rightDistanceSensor),rightDistanceSensor.didTimeOut());
+            teamUtil.telemetry.addData("backDistance:", "%.1f %b", getDistanceInches(backDistanceSensor),backDistanceSensor.didTimeOut());
         }
-        teamUtil.telemetry.addLine("front color" + frontmiddleColor.alpha() + ":" + frontmiddleColor.red() + ":" + frontmiddleColor.green() + ":" + frontmiddleColor.blue());
+        teamUtil.telemetry.addLine("front color:" + frontmiddleColor.alpha() + ":" + frontmiddleColor.red() + ":" + frontmiddleColor.green() + ":" + frontmiddleColor.blue());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -698,24 +698,14 @@ public class RobotDrive {
         speed = clip(speed);
 
         do {
-//            double driveSpeed = Range.clip( Math.abs(fRightMotor.getCurrentPosition()-encoderCounts)/700, 0.2, 1);
+
             driveForward(speed);
 
-            //teamUtil.log("difference: " + Math.abs(fRightMotor.getCurrentPosition() - encoderCounts));
-            //teamUtil.log("rightMotorPower: " + fRightMotor.getPower());
-            //teamUtil.log("fRightMotor: " + getBackLeftMotorPos());
             encoderTelemetry();
 
 
         } while ((Math.abs(fRightMotor.getCurrentPosition()) < encoderCounts) && teamUtil.keepGoing(timeOutTime));
-        //runs to the set number of inches at the desired speed
 
-
-        /* This is not valid code unless you are in RUN_TO_POSITION
-        while (fLeftMotor.isBusy() && fRightMotor.isBusy()) {
-            encoderTelemetry();
-        }
-         */
 
         //turns off both motors
         stopMotors();
@@ -1997,14 +1987,14 @@ public class RobotDrive {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Rotate to the desired direction at the maximum speed
-    public enum RobotRotation {TOWARDS_FIELD, TOWARDS_DRIVER, TOWARDS_DEPOT, TOWARDS_BUILDING}
+    public enum RobotRotation {TOWARDS_FIELD, TOWARDS_WALL, TOWARDS_DEPOT, TOWARDS_BUILDING}
 
     public void newRotateTo(RobotRotation attitude) {
         switch (attitude) {
             case TOWARDS_FIELD:
                 newRotateTo(0.0);
                 break;
-            case TOWARDS_DRIVER:
+            case TOWARDS_WALL:
                 newRotateTo(180.0);
                 break;
             case TOWARDS_DEPOT:

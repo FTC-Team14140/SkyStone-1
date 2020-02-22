@@ -12,14 +12,14 @@ public class Latch {
     //NEED TO INTRODUCE STATE MACHINE(MAKE SURE GRABBER ONE WORKS, THEN COPY-PASTE
 
     public static final double LATCH_ONE_UP = 0.3;
-    public static final double LATCH_ONE_PUSHBOT = 0.59;
+    public static final double LATCH_ONE_PUSHBOT = 0.572; //TODO: 0.59
     public static final double LATCH_ONE_MIDDLE = 0.64;
     public static final double LATCH_ONE_DOWN = 0.72;
 
     public static final double LATCH_TWO_UP = 0.73;
-    public static final double LATCH_TWO_PUSHBOT = 0.38;
+    public static final double LATCH_TWO_PUSHBOT = 0.387;
     public static final double LATCH_TWO_MIDDLE = 0.31;
-    public static final double LATCH_TWO_DOWN = 0.23;
+    public static final double LATCH_TWO_DOWN = 0.25;
 
 
     public boolean latchIsUp;
@@ -70,6 +70,13 @@ public class Latch {
         latchOne.setPosition(LATCH_ONE_MIDDLE);
         latchTwo.setPosition(LATCH_TWO_MIDDLE);
         teamUtil.telemetry.addData("latch is in middle position", "");
+    }
+
+    public void latchTwoPushbot(){
+        latchTwo.setPosition(LATCH_TWO_PUSHBOT);
+    }
+    public void latchOnePushbot(){
+        latchOne.setPosition(LATCH_ONE_PUSHBOT);
     }
 
     public void latchPushbot() {

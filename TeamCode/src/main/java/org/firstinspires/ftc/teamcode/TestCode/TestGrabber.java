@@ -11,7 +11,6 @@ import org.firstinspires.ftc.teamcode.basicLibs.TeamGamepad;
 import org.firstinspires.ftc.teamcode.basicLibs.teamUtil;
 
 @TeleOp(name = "TestGrabber")
-@Disabled
 
 public class TestGrabber extends LinearOpMode {
 
@@ -25,6 +24,13 @@ public class TestGrabber extends LinearOpMode {
         grabber = new Grabber(hardwareMap, teamUtil.telemetry);
         teamGamepad = new TeamGamepad(this);
         grabber.initGrabber();
+
+    //        teamUtil.log ("Initializing Grabber");
+    //        grabberOne = hardwareMap.servo.get("grabberOne");
+    //        grabberTwo = hardwareMap.servo.get("grabberTwo");
+    //        rotateServo = hardwareMap.servo.get("rotateServo");
+    //        grabberState = GrabberState.GRABBER_STOWED;
+    //        rotation = GrabberRotation.UNKNOWN;
 
         waitForStart();
         while (opModeIsActive()) {

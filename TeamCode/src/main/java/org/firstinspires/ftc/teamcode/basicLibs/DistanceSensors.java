@@ -37,6 +37,9 @@ public class DistanceSensors {
         return getDistance() < 20;//If the current reating is less thean 20 it will return the value as a valid reading
 
     }
+    public boolean didTimeOut() {
+        return rev2mDistanceSensor.didTimeoutOccur();
+    }
 
 }
 

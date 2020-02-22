@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Assemblies;
 
 import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -14,7 +15,7 @@ public class Lift {
     HardwareMap hardwareMap;
     Telemetry telemetry;
 
-    private DcMotor liftBase;
+    private DcMotorEx liftBase;
     public DcMotor rSpindle;
     public DcMotor lSpindle;
     private RevTouchSensor liftDownLimit;
@@ -76,7 +77,7 @@ public class Lift {
         liftState = LiftState.IDLE;
         elevatorState = ElevatorState.IDLE;
 
-        liftBase = hardwareMap.dcMotor.get("liftBase");
+        liftBase = hardwareMap.get(DcMotorEx.class, "liftBase");
         liftBase.setDirection(DcMotorSimple.Direction.REVERSE);
         liftBase.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -207,9 +208,15 @@ public class Lift {
         timedOut = false;
 
         teamUtil.log("Limit Switch:" + liftDownLimit.isPressed());
-        liftBasePower = .75;
-        liftBaseDown();
-        teamUtil.sleep(1000);
+        liftBase.setTargetPosition(0);
+        liftBase.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftBase.setVelocity(-2800);
+        while ((liftBase.getCurrentPosition() > (500)) && teamUtil.keepGoing(timeOutTime)) {
+
+        }
+//        liftBasePower = .75;
+//        liftBaseDown();
+//        teamUtil.sleep(1000);
         liftBasePower = .4;
         liftBaseDown();
         while (!liftDownLimit.isPressed() && teamUtil.keepGoing(timeOutTime)) {
@@ -230,6 +237,40 @@ public class Lift {
             teamUtil.log("Moving Lift Down - TIMED OUT!");
         }
         teamUtil.log("Moving Lift Down - Finished");
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private void moveBaseDownMuchFaster(long timeOut) {
+        if (!liftBaseIsUp()) { // should not be called if we are not at the top
+            teamUtil.log("ERROR: moveBaseDownFaster called when base not at top");
+            liftState = LiftState.IDLE;
+            return;
+        }
+        long timeOutTime = System.currentTimeMillis() + timeOut;
+        timedOut = false;
+
+        liftBase.setTargetPosition(0);
+        liftBase.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftBase.setVelocity(-2800);
+
+        while(liftBase.isBusy()){
+
+        }
+//        while (!liftDownLimit.isPressed() && teamUtil.keepGoing(timeOutTime)) {
+//            //teamUtil.log("Lift Base Encoder:"+liftBase.getCurrentPosition());
+//            liftBaseDown();
+//        }
+        shutDownLiftBase();
+
+        teamUtil.log("LiftBaseEncoder: " + liftBase.getCurrentPosition());
+
+        liftState = LiftState.IDLE;
+
+        timedOut = (System.currentTimeMillis() > timeOutTime);
+        if (timedOut) {
+            teamUtil.log("Moving Lift Much Faster Down - TIMED OUT!");
+        }
+        teamUtil.log("Moving Lift Much Faster Down - Finished");
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -289,7 +330,7 @@ public class Lift {
         liftBase.setPower(0);
         liftBase.setTargetPosition(mockTarget);
         liftBase.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        liftBase.setPower(power);
+        liftBase.setVelocity(2800);
         // wait for the lift to get close to its final position before we move on
         // Using isBusy() on the liftbase motor takes a LONG time due to the PID slowing down at the end
         while ((liftBase.getCurrentPosition() < (LIFT_BASE_TOP_LIMIT_ENCODER_CLICKS)) && teamUtil.keepGoing(timeOutTime)) {
@@ -298,7 +339,7 @@ public class Lift {
                 safeToElevate = true;
             }
         }
-        stallLiftBaseUp(); //TODO: TRY DIS
+        stallLiftBaseUp();
         shutDownLiftBase();
         teamUtil.log("LiftBase is Up");
         teamUtil.log("LiftBaseEncoder: " + liftBase.getCurrentPosition());
@@ -403,7 +444,8 @@ public class Lift {
             long lastLiftBase = liftBase.getCurrentPosition();
             teamUtil.sleep(250);
             // if things aren't moving, we have stalled
-            if (liftBase.getCurrentPosition() == lastLiftBase) {
+
+            if ((liftBase.getCurrentPosition() == lastLiftBase) || (liftBase.getCurrentPosition() > 3200)) { //if it stalls or if it gets above safety position and we have to STOP
                 liftBase.setPower(0);
                 liftBase.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 return;

@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.basicLibs.Blinkin;
 import org.firstinspires.ftc.teamcode.basicLibs.teamUtil;
 
 @TeleOp(name = "NEW TestDriveSystem")
-@Disabled
+//@Disabled
 public class newTestDrive extends LinearOpMode{
 
         public static double MAX_POWER = 1;
@@ -123,7 +123,7 @@ public class newTestDrive extends LinearOpMode{
                     drive.newRotateTo(RobotDrive.RobotRotation.TOWARDS_FIELD);
                     sleep(250);
                 } else if (gamepad1.dpad_down) {
-                    drive.newRotateTo(RobotDrive.RobotRotation.TOWARDS_DRIVER);
+                    drive.newRotateTo(RobotDrive.RobotRotation.TOWARDS_WALL);
                     sleep(250);
                 } else if (gamepad1.dpad_left) {
                     drive.newRotateTo(RobotDrive.RobotRotation.TOWARDS_DEPOT);

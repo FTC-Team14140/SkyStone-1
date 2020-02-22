@@ -245,6 +245,49 @@ public class Robot {
         }
     }
 
+    public void doubleSkystonePathOne(){
+        boolean RED = (teamUtil.alliance == teamUtil.Alliance.RED);
+
+        liftSystem.lift.slightlyMoveLiftBaseUp(1, 2000);
+        liftSystem.grabber.slightlyOpenGrabber();
+        teamUtil.sleep(750);
+
+        /////////////////////////////////////////////////////////
+        // drive back and position for the second stone
+        liftSystem.lift.moveLiftBaseDownNoWait(0.5, 3000);
+        drive.newRotateTo(RobotDrive.RobotRotation.TOWARDS_DEPOT);
+
+        drive.newAccelerateInchesForward(2200, 69, RED ? 91 : 269, 6000);
+        drive.moveToDistanceFailover( 7, 2200, RED ? 89: 271,  true, 5000);
+        drive.newRotateTo(RobotDrive.RobotRotation.TOWARDS_WALL);
+//
+        if(RED){
+            drive.moveInchesRight(0.5, 3, 3000);
+        }else{
+            drive.moveInchesLeft(0.5, 4.5, 3000);
+        }
+        drive.newAccelerateInchesForward(-650, 9, 180, 4000);
+
+        if(RED){
+            latch.latchTwoPushbot();
+        } else {
+            latch.latchOnePushbot();
+        }
+
+        teamUtil.pause(500);
+        drive.newAccelerateInchesForward(650, 5.5, 180, 4000);
+        drive.newRotateTo(RED ? 70: 290);
+        latch.latchUp();
+        drive.newRotateTo(RobotDrive.RobotRotation.TOWARDS_DEPOT);
+        drive.newAccelerateInchesForward(-2200, 75, RED ? 89: 269, 6097);
+
+        while(!drive.bottomColor.isOnTape()) {
+            drive.driveForward(0.5);
+        }
+        drive.stopMotors();
+
+    }
+
     public void doubleSkystone() {
 
         boolean RED = (teamUtil.alliance == teamUtil.Alliance.RED);
@@ -359,13 +402,13 @@ public class Robot {
                 //TODO: FIX FOR BLUE
                 break;
             case 1:
-                if (RED)
+                if (RED) {
                     drive.moveInchesLeft(0.35, 15, 2300);
-                else
+                } else {
                     //move right to stone to line up, then back up('cause we drift forward a little :C)
-                    drive.moveInchesRight(0.35, 15, 2300);
-                    drive.newAccelerateInchesForward(-2200, 1, 0, 3000);
-
+                    drive.moveInchesRight(0.35, 15, 5000);
+//                    drive.newAccelerateInchesForward(-2200, 1, 0, 3000);
+                }
                 //TODO: FIX FOR BLUE
         }
         // TODO: will the strafes to the left/right above effect the location of the robot relative to the wall (and later the skybridge)?
@@ -376,7 +419,8 @@ public class Robot {
 
         /////////////////////////////////////////////////////////
         // Deliver the first stone to the building side of the field
-        drive.newAccelerateInchesForward(-2200, (RED ? 5 : 8/*TODO*/), 0, 3000);
+        drive.newAccelerateInchesForward(-2200, (RED ? 5 : 7/*TODO*/), 0, 3000);
+
         drive.newRotateTo(RobotDrive.RobotRotation.TOWARDS_BUILDING);
         switch (path) { // TODO: OR, we could go back to finding the tape line as we cross it and moving a set distance from there...
             case 3:
@@ -386,10 +430,17 @@ public class Robot {
                 distance = (RED ? 52.5 : 52.5/*TODO*/);
                 break;// TODO RED + 8?
             case 1:
-                distance = (RED ? 60.5 : 60.5/*TODO*/);
+                distance = (RED ? 60.5 : 62.5/*TODO*/);
                 break;// TODO RED + 8?
         }
         drive.newAccelerateInchesForward(2200, distance, RED ? 268 : 88, 5000);
+
+        if(path == 1){
+            doubleSkystonePathOne();
+            return;
+        }
+
+        //TODO: PATH ONE DIVERGES   <---------------------------------------------------------------------------------------------------------------------------------------------------------------
         drive.newRotateTo(RobotDrive.RobotRotation.TOWARDS_FIELD);
 
         //If Blue, move forward a little 'cause long strafe will be towards center of field

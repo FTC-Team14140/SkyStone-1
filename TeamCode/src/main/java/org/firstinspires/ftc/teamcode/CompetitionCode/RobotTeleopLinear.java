@@ -101,6 +101,11 @@ public class RobotTeleopLinear extends LinearOpMode {
                 if (gamepad1.left_bumper) {
                     robot.liftSystem.grabAndStowNoWait(4000);
                 }
+
+            }
+
+            if(gamepad1.a){
+                robot.liftSystem.outsideCapNoWait();
             }
 
 /////////////////////////////////////////////////////////////////////////
