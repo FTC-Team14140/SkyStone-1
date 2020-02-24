@@ -182,7 +182,6 @@ public class Robot {
 
         drive.newAccelerateInchesBackward(2200, 25, 0, 3000);
         drive.newAccelerateInchesBackward(1500, 5, 0, 3000);
-
         latch.latchDown();
         teamUtil.pause(750);
 
@@ -215,6 +214,45 @@ public class Robot {
         }
         drive.stopMotors();
         justRanAuto = true;
+
+
+    }
+
+    public void dragFoundationBackSkystonePath(){
+        boolean RED = (teamUtil.alliance == teamUtil.Alliance.RED);
+        latch.latchDown();
+        teamUtil.pause(750);
+
+        drive.newRotateTo(RobotDrive.RobotRotation.TOWARDS_FIELD);
+
+        if(RED){
+            drive.newAccelerateInchesForward(2200, 25, 185, 3000);
+            drive.newAccelerateInchesForward(1500, 11, 180, 3000);
+        } else {
+            drive.newAccelerateInchesForward(2200, 25, 175, 3000);
+            drive.newAccelerateInchesForward(1500, 11, 180, 3000);
+        }
+
+        latch.latchUp();
+        teamUtil.pause(1000);
+
+        if(RED){
+            drive.moveInchesRight(0.5, 10, 2300);
+        } else {
+            drive.moveInchesLeft(0.5, 10, 2300);
+        }
+        while (!drive.bottomColor.isOnTape()) {
+            if(RED){
+                drive.driveRight(0.6);
+
+            } else {
+                drive.driveLeft(0.6);
+
+            }
+        }
+        drive.stopMotors();
+        justRanAuto = true;
+
     }
 
 
@@ -288,6 +326,200 @@ public class Robot {
 
     }
 
+    public void foundationStone(){
+        boolean RED = (teamUtil.alliance == teamUtil.Alliance.RED);
+        boolean useDistanceSensorsALot = false;
+        double distance = 0;
+        detector = new SkystoneDetector(telemetry, hardwareMap);
+        detector.initDetector();
+        detector.activateDetector();
+        runningVoteCount voteCount = new runningVoteCount(3000);
+
+
+        teamUtil.telemetry.addLine("Ready to Start");
+        teamUtil.telemetry.update();
+
+        // Start detecting but wait for start of match to move
+        while (!teamUtil.theOpMode.opModeIsActive() && !teamUtil.theOpMode.isStopRequested()) {
+            teamUtil.sleep(200);
+
+            int vote = RED ? detector.detectRed() : detector.detectBlue();
+            if (vote > 0) {
+                voteCount.vote(vote);
+            }
+            int[] pathVotes = voteCount.getTotals();
+
+
+            teamUtil.log(" Totals:"+pathVotes[1]+"/"+pathVotes[2]+"/"+pathVotes[3]);
+
+            if (pathVotes[1] > 0 && pathVotes[2]==0 && pathVotes[3] == 0) { //if we get NO path 2 or path 3 votes, it's path 1
+                if(RED){
+                    teamUtil.theBlinkin.setSignal(Blinkin.Signals.RED_PATH_1);
+                } else{
+                    teamUtil.theBlinkin.setSignal(Blinkin.Signals.BLUE_PATH_1);
+                }
+                path = 1;
+                teamUtil.log( "PATH: "+1);
+                telemetry.addLine("path 1");
+            } else if (pathVotes[3] > pathVotes[2]*2) { //if we get tons more path 3 than path 2 votes, it's path 3
+                if(RED){
+                    teamUtil.theBlinkin.setSignal(Blinkin.Signals.RED_PATH_3);
+                } else{
+                    teamUtil.theBlinkin.setSignal(Blinkin.Signals.BLUE_PATH_3);
+                }
+                path = 3;
+                teamUtil.log( "PATH: "+3);
+                telemetry.addLine("path 3");
+
+            } else { //path 2 gets crappy data so if no other conditions fit, it's path 2
+                if(RED){
+                    teamUtil.theBlinkin.setSignal(Blinkin.Signals.RED_PATH_2);
+                } else{
+                    teamUtil.theBlinkin.setSignal(Blinkin.Signals.BLUE_PATH_2);
+                }
+                path = 2;
+                teamUtil.log( "PATH: "+2);
+                telemetry.addLine("path 2");
+
+            }
+
+//            int detected = (RED ? detector.detectRed() : detector.detectBlue());
+//            if (detected > 0) {
+//                path = detected;
+//            }
+//            if (RED) {
+//                switch (path) {
+//                    case 1 : teamUtil.theBlinkin.setSignal(Blinkin.Signals.RED_PATH_1); break;
+//                    case 2 : teamUtil.theBlinkin.setSignal(Blinkin.Signals.RED_PATH_2); break;
+//                    case 3 : teamUtil.theBlinkin.setSignal(Blinkin.Signals.RED_PATH_3); break;
+//                }
+//            } else {
+//                switch (path) {
+//                    case 1:
+//                        teamUtil.theBlinkin.setSignal(Blinkin.Signals.BLUE_PATH_1);
+//                        break;
+//                    case 2:
+//                        teamUtil.theBlinkin.setSignal(Blinkin.Signals.BLUE_PATH_2);
+//                        break;
+//                    case 3:
+//                        teamUtil.theBlinkin.setSignal(Blinkin.Signals.BLUE_PATH_3);
+//                        break;
+//
+//                }
+//            }
+
+
+
+        }
+        if(RED) {
+            teamUtil.theBlinkin.setSignal(Blinkin.Signals.RED_AUTO);
+        } else {
+            teamUtil.theBlinkin.setSignal(Blinkin.Signals.BLUE_AUTO);
+        }
+
+        detector.shutdownDector();
+
+        if (teamUtil.theOpMode.isStopRequested()) {
+            return;
+        }
+
+        /////////////////////////////////////////////////////////
+        // Move to the first Skystone and grab it
+        liftSystem.prepareToGrabNoWait(4000, Grabber.GrabberRotation.INSIDE);
+        switch (path) {
+            case 3:
+                // move straight forward
+                break;
+            case 2:
+                if (RED)
+                    drive.moveInchesLeft(0.35, 7, 2300);
+                else
+                    drive.moveInchesRight(0.35, 7, 2300);
+
+                //TODO: FIX FOR BLUE
+                break;
+            case 1:
+                if (RED) {
+                    drive.moveInchesLeft(0.35, 15, 2300);
+                } else {
+                    //move right to stone to line up, then back up('cause we drift forward a little :C)
+                    drive.moveInchesRight(0.35, 15, 5000);
+//                    drive.newAccelerateInchesForward(-2200, 1, 0, 3000);
+                }
+                //TODO: FIX FOR BLUE
+        }
+        // TODO: will the strafes to the left/right above effect the location of the robot relative to the wall (and later the skybridge)?
+        // TODO: If so, perhaps the rear distance sensor could come in handy here to normalize that distance before we move forward
+        drive.newAccelerateInchesForward(1100, 32, 0, 3000);
+        liftSystem.grabAndStowNoWait(4500);
+        teamUtil.pause(750);
+
+        /////////////////////////////////////////////////////////
+        // Deliver the first stone to the building side of the field
+        drive.newAccelerateInchesForward(-2200, (RED ? 5 : 7/*TODO*/), 0, 3000);
+
+        drive.newRotateTo(RobotDrive.RobotRotation.TOWARDS_BUILDING);
+        switch (path) { // TODO: OR, we could go back to finding the tape line as we cross it and moving a set distance from there...
+            case 3:
+                distance = (RED ? 75.5 : 75.5/*TODO*/);
+                break;
+            case 2:
+                distance = (RED ? 83.5 : 83.5/*TODO*/);
+                break;// TODO RED + 8?
+            case 1:
+                distance = (RED ? 95.5 : 95.5/*TODO*/);
+                break;// TODO RED + 8?
+        }
+        drive.newAccelerateInchesForward(2200, distance, RED ? 268 : 88, 5000);
+        drive.newRotateTo(RobotDrive.RobotRotation.TOWARDS_FIELD);
+        drive.newAccelerateInchesForward(2200, RED ? 5 : 10, 0,  3000);
+//        liftSystem.lift.slightlyMoveLiftBaseUp(1, 2000);
+        liftSystem.grabber.slightlyOpenGrabber();
+
+        drive.newAccelerateInchesForward(-2200, 7, 0,  3000);
+//        liftSystem.lift.moveLiftBaseDownNoWait(0.5, 3000);
+        liftSystem.grabber.grabberStow();
+        drive.newRotateTo(RobotDrive.RobotRotation.TOWARDS_WALL);
+        drive.newAccelerateInchesForward(-2200, 8.5, 180,  3000);
+
+        latch.latchDown();
+        teamUtil.pause(750);
+
+        drive.newRotateTo(RobotDrive.RobotRotation.TOWARDS_WALL);
+
+        if(RED){
+            drive.newAccelerateInchesForward(2200, 25, 185, 3000);
+            drive.newAccelerateInchesForward(1000, 9.5, 180, 3000);
+        } else {
+            drive.newAccelerateInchesForward(2200, 25, 175, 3000);
+            drive.newAccelerateInchesForward(1000, 9.5, 180, 3000);
+        }
+
+        latch.latchUp();
+        teamUtil.pause(1000);
+
+        if(RED){
+            drive.moveInchesRight(0.5, 36, 2300);
+        } else {
+            drive.moveInchesLeft(0.5, 36, 2300);
+        }
+
+        drive.newAccelerateInchesForward(-1500, RED ? 26 : 25, 180, 3500);
+
+        while (!drive.bottomColor.isOnTape()) {
+            if(RED){
+                drive.driveRight(0.6);
+
+            } else {
+                drive.driveLeft(0.6);
+
+            }
+        }
+        drive.stopMotors();
+        justRanAuto = true;
+
+
+    }
     public void doubleSkystone() {
 
         boolean RED = (teamUtil.alliance == teamUtil.Alliance.RED);

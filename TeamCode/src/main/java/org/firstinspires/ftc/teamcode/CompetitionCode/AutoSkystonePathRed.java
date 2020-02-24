@@ -12,8 +12,6 @@ import org.firstinspires.ftc.teamcode.basicLibs.teamUtil;
 public class AutoSkystonePathRed extends LinearOpMode {
 
     Robot robot;
-    boolean isSkystone;
-    SkystoneDetector detector;
 
 
     public void initialize() {
