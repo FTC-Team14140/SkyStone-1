@@ -21,7 +21,7 @@ public class Robot {
     public boolean hasBeenInitialized = false;
     private static boolean justRanAuto;
 
-    static{
+    static {
         justRanAuto = false;
     }
 
@@ -60,7 +60,7 @@ public class Robot {
         drive.initDriveMotors();
         if (usingDistanceSensors) {
             drive.initSensors(false);
-        } else{
+        } else {
             drive.initSensors(true);
         }
         drive.resetHeading();
@@ -173,7 +173,7 @@ public class Robot {
     public void foundation() {
         boolean RED = (teamUtil.alliance == teamUtil.Alliance.RED);
 
-        if(RED){
+        if (RED) {
             drive.moveInchesLeft(0.5, 11, 4000);
 
         } else {
@@ -187,7 +187,7 @@ public class Robot {
 
         drive.rotateToZero();
 
-        if(RED){
+        if (RED) {
             drive.newAccelerateInchesForward(2200, 25, 5, 3000);
             drive.newAccelerateInchesForward(1500, 11, 0, 3000);
         } else {
@@ -198,13 +198,13 @@ public class Robot {
         latch.latchUp();
         teamUtil.pause(1000);
 
-        if(RED){
+        if (RED) {
             drive.moveInchesRight(0.5, 10, 2300);
         } else {
             drive.moveInchesLeft(0.5, 10, 2300);
         }
         while (!drive.bottomColor.isOnTape()) {
-            if(RED){
+            if (RED) {
                 drive.driveRight(0.6);
 
             } else {
@@ -212,20 +212,26 @@ public class Robot {
 
             }
         }
+
+        if (RED) {
+            drive.moveInchesLeft(0.5, 3, 2000);
+        } else {
+            drive.moveInchesRight(0.5, 3, 2000);
+        }
         drive.stopMotors();
         justRanAuto = true;
 
 
     }
 
-    public void dragFoundationBackSkystonePath(){
+    public void dragFoundationBackSkystonePath() {
         boolean RED = (teamUtil.alliance == teamUtil.Alliance.RED);
         latch.latchDown();
         teamUtil.pause(750);
 
         drive.newRotateTo(RobotDrive.RobotRotation.TOWARDS_FIELD);
 
-        if(RED){
+        if (RED) {
             drive.newAccelerateInchesForward(2200, 25, 185, 3000);
             drive.newAccelerateInchesForward(1500, 11, 180, 3000);
         } else {
@@ -236,13 +242,13 @@ public class Robot {
         latch.latchUp();
         teamUtil.pause(1000);
 
-        if(RED){
+        if (RED) {
             drive.moveInchesRight(0.5, 10, 2300);
         } else {
             drive.moveInchesLeft(0.5, 10, 2300);
         }
         while (!drive.bottomColor.isOnTape()) {
-            if(RED){
+            if (RED) {
                 drive.driveRight(0.6);
 
             } else {
@@ -283,7 +289,7 @@ public class Robot {
         }
     }
 
-    public void doubleSkystonePathOne(){
+    public void doubleSkystonePathOne() {
         boolean RED = (teamUtil.alliance == teamUtil.Alliance.RED);
 
         liftSystem.lift.slightlyMoveLiftBaseUp(1, 2000);
@@ -296,17 +302,17 @@ public class Robot {
         drive.newRotateTo(RobotDrive.RobotRotation.TOWARDS_DEPOT);
 
         drive.newAccelerateInchesForward(2200, 69, RED ? 91 : 269, 6000);
-        drive.moveToDistanceFailover( 7, 2200, RED ? 89: 271,  true, 5000);
+        drive.moveToDistanceFailover(7, 2200, RED ? 89 : 271, true, 5000);
         drive.newRotateTo(RobotDrive.RobotRotation.TOWARDS_WALL);
 //
-        if(RED){
+        if (RED) {
             drive.moveInchesRight(0.5, 3, 3000);
-        }else{
+        } else {
             drive.moveInchesLeft(0.5, 4.5, 3000);
         }
         drive.newAccelerateInchesForward(-650, 9, 180, 4000);
 
-        if(RED){
+        if (RED) {
             latch.latchTwoPushbot();
         } else {
             latch.latchOnePushbot();
@@ -314,19 +320,19 @@ public class Robot {
 
         teamUtil.pause(500);
         drive.newAccelerateInchesForward(650, 5.5, 180, 4000);
-        drive.newRotateTo(RED ? 70: 290);
+        drive.newRotateTo(RED ? 70 : 290);
         latch.latchUp();
         drive.newRotateTo(RobotDrive.RobotRotation.TOWARDS_DEPOT);
-        drive.newAccelerateInchesForward(-2200, 75, RED ? 89: 269, 6097);
+        drive.newAccelerateInchesForward(-2200, 75, RED ? 89 : 269, 6097);
 
-        while(!drive.bottomColor.isOnTape()) {
+        while (!drive.bottomColor.isOnTape()) {
             drive.driveForward(0.5);
         }
         drive.stopMotors();
 
     }
 
-    public void foundationStone(){
+    public void foundationStone() {
         boolean RED = (teamUtil.alliance == teamUtil.Alliance.RED);
         boolean useDistanceSensorsALot = false;
         double distance = 0;
@@ -350,35 +356,35 @@ public class Robot {
             int[] pathVotes = voteCount.getTotals();
 
 
-            teamUtil.log(" Totals:"+pathVotes[1]+"/"+pathVotes[2]+"/"+pathVotes[3]);
+            teamUtil.log(" Totals:" + pathVotes[1] + "/" + pathVotes[2] + "/" + pathVotes[3]);
 
-            if (pathVotes[1] > 0 && pathVotes[2]==0 && pathVotes[3] == 0) { //if we get NO path 2 or path 3 votes, it's path 1
-                if(RED){
+            if (pathVotes[1] > 0 && pathVotes[2] == 0 && pathVotes[3] == 0) { //if we get NO path 2 or path 3 votes, it's path 1
+                if (RED) {
                     teamUtil.theBlinkin.setSignal(Blinkin.Signals.RED_PATH_1);
-                } else{
+                } else {
                     teamUtil.theBlinkin.setSignal(Blinkin.Signals.BLUE_PATH_1);
                 }
                 path = 1;
-                teamUtil.log( "PATH: "+1);
+                teamUtil.log("PATH: " + 1);
                 telemetry.addLine("path 1");
-            } else if (pathVotes[3] > pathVotes[2]*2) { //if we get tons more path 3 than path 2 votes, it's path 3
-                if(RED){
+            } else if (pathVotes[3] > pathVotes[2] * 2) { //if we get tons more path 3 than path 2 votes, it's path 3
+                if (RED) {
                     teamUtil.theBlinkin.setSignal(Blinkin.Signals.RED_PATH_3);
-                } else{
+                } else {
                     teamUtil.theBlinkin.setSignal(Blinkin.Signals.BLUE_PATH_3);
                 }
                 path = 3;
-                teamUtil.log( "PATH: "+3);
+                teamUtil.log("PATH: " + 3);
                 telemetry.addLine("path 3");
 
             } else { //path 2 gets crappy data so if no other conditions fit, it's path 2
-                if(RED){
+                if (RED) {
                     teamUtil.theBlinkin.setSignal(Blinkin.Signals.RED_PATH_2);
-                } else{
+                } else {
                     teamUtil.theBlinkin.setSignal(Blinkin.Signals.BLUE_PATH_2);
                 }
                 path = 2;
-                teamUtil.log( "PATH: "+2);
+                teamUtil.log("PATH: " + 2);
                 telemetry.addLine("path 2");
 
             }
@@ -409,9 +415,8 @@ public class Robot {
 //            }
 
 
-
         }
-        if(RED) {
+        if (RED) {
             teamUtil.theBlinkin.setSignal(Blinkin.Signals.RED_AUTO);
         } else {
             teamUtil.theBlinkin.setSignal(Blinkin.Signals.BLUE_AUTO);
@@ -472,22 +477,22 @@ public class Robot {
         }
         drive.newAccelerateInchesForward(2200, distance, RED ? 268 : 88, 5000);
         drive.newRotateTo(RobotDrive.RobotRotation.TOWARDS_FIELD);
-        drive.newAccelerateInchesForward(2200, RED ? 5 : 10, 0,  3000);
+        drive.newAccelerateInchesForward(2200, RED ? 5 : 10, 0, 3000);
 //        liftSystem.lift.slightlyMoveLiftBaseUp(1, 2000);
         liftSystem.grabber.slightlyOpenGrabber();
 
-        drive.newAccelerateInchesForward(-2200, 7, 0,  3000);
+        drive.newAccelerateInchesForward(-2200, 7, 0, 3000);
 //        liftSystem.lift.moveLiftBaseDownNoWait(0.5, 3000);
         liftSystem.grabber.grabberStow();
         drive.newRotateTo(RobotDrive.RobotRotation.TOWARDS_WALL);
-        drive.newAccelerateInchesForward(-2200, 8.5, 180,  3000);
+        drive.newAccelerateInchesForward(-2200, 8.5, 180, 3000);
 
         latch.latchDown();
         teamUtil.pause(750);
 
         drive.newRotateTo(RobotDrive.RobotRotation.TOWARDS_WALL);
 
-        if(RED){
+        if (RED) {
             drive.newAccelerateInchesForward(2200, 25, 185, 3000);
             drive.newAccelerateInchesForward(1000, 9.5, 180, 3000);
         } else {
@@ -498,7 +503,7 @@ public class Robot {
         latch.latchUp();
         teamUtil.pause(1000);
 
-        if(RED){
+        if (RED) {
             drive.moveInchesRight(0.5, 36, 2300);
         } else {
             drive.moveInchesLeft(0.5, 36, 2300);
@@ -507,7 +512,7 @@ public class Robot {
         drive.newAccelerateInchesForward(-1500, RED ? 26 : 25, 180, 3500);
 
         while (!drive.bottomColor.isOnTape()) {
-            if(RED){
+            if (RED) {
                 drive.driveRight(0.6);
 
             } else {
@@ -520,6 +525,7 @@ public class Robot {
 
 
     }
+
     public void doubleSkystone() {
 
         boolean RED = (teamUtil.alliance == teamUtil.Alliance.RED);
@@ -545,35 +551,35 @@ public class Robot {
             int[] pathVotes = voteCount.getTotals();
 
 
-            teamUtil.log(" Totals:"+pathVotes[1]+"/"+pathVotes[2]+"/"+pathVotes[3]);
+            teamUtil.log(" Totals:" + pathVotes[1] + "/" + pathVotes[2] + "/" + pathVotes[3]);
 
-            if (pathVotes[1] > 0 && pathVotes[2]==0 && pathVotes[3] == 0) { //if we get NO path 2 or path 3 votes, it's path 1
-                if(RED){
+            if (pathVotes[1] > 0 && pathVotes[2] == 0 && pathVotes[3] == 0) { //if we get NO path 2 or path 3 votes, it's path 1
+                if (RED) {
                     teamUtil.theBlinkin.setSignal(Blinkin.Signals.RED_PATH_1);
-                } else{
+                } else {
                     teamUtil.theBlinkin.setSignal(Blinkin.Signals.BLUE_PATH_1);
                 }
                 path = 1;
-                teamUtil.log( "PATH: "+1);
+                teamUtil.log("PATH: " + 1);
                 telemetry.addLine("path 1");
-            } else if (pathVotes[3] > pathVotes[2]*2) { //if we get tons more path 3 than path 2 votes, it's path 3
-                if(RED){
+            } else if (pathVotes[3] > pathVotes[2] * 2) { //if we get tons more path 3 than path 2 votes, it's path 3
+                if (RED) {
                     teamUtil.theBlinkin.setSignal(Blinkin.Signals.RED_PATH_3);
-                } else{
+                } else {
                     teamUtil.theBlinkin.setSignal(Blinkin.Signals.BLUE_PATH_3);
                 }
                 path = 3;
-                teamUtil.log( "PATH: "+3);
+                teamUtil.log("PATH: " + 3);
                 telemetry.addLine("path 3");
 
             } else { //path 2 gets crappy data so if no other conditions fit, it's path 2
-                if(RED){
+                if (RED) {
                     teamUtil.theBlinkin.setSignal(Blinkin.Signals.RED_PATH_2);
-                } else{
+                } else {
                     teamUtil.theBlinkin.setSignal(Blinkin.Signals.BLUE_PATH_2);
                 }
                 path = 2;
-                teamUtil.log( "PATH: "+2);
+                teamUtil.log("PATH: " + 2);
                 telemetry.addLine("path 2");
 
             }
@@ -604,9 +610,8 @@ public class Robot {
 //            }
 
 
-
         }
-        if(RED) {
+        if (RED) {
             teamUtil.theBlinkin.setSignal(Blinkin.Signals.RED_AUTO);
         } else {
             teamUtil.theBlinkin.setSignal(Blinkin.Signals.BLUE_AUTO);
@@ -667,7 +672,7 @@ public class Robot {
         }
         drive.newAccelerateInchesForward(2200, distance, RED ? 268 : 88, 5000);
 
-        if(path == 1){
+        if (path == 1) {
             doubleSkystonePathOne();
             return;
         }
@@ -698,7 +703,7 @@ public class Robot {
                     drive.driveRight(0.75);
                 }
             }
-            if(!RED){
+            if (!RED) {
                 drive.moveInchesLeft(0.5, 3, 2000);
             }
             drive.stopMotors();
@@ -730,7 +735,6 @@ public class Robot {
         liftSystem.prepareToGrabNoWait(3500, Grabber.GrabberRotation.INSIDE);
         drive.newRotateTo(RobotDrive.RobotRotation.TOWARDS_FIELD);
         //strafe a tad if we're doing path 2 to line up to the stone
-
 
 
         if (path == 2) {
