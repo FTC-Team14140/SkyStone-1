@@ -2157,13 +2157,13 @@ public class RobotDrive {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void universalJoystick(float leftJoyStickX, float leftJoyStickY, float rightJoyStickX, boolean isFast, double robotHeading, double heldHeading) {
-        double angleInDegrees = robotHeading * Math.PI / 180; // TODO: Isn't this converting TO Radians resulting in an 'angleInRadians'?
+        double angleInRadians = robotHeading * Math.PI / 180; // TODO: Isn't this converting TO Radians resulting in an 'angleInRadians'?
         float leftX = leftJoyStickX;
         float leftY = leftJoyStickY;
         float rightX = rightJoyStickX;
 
-        float rotatedLeftX = (float) (Math.cos(angleInDegrees) * leftX - Math.sin(angleInDegrees) * leftY);
-        float rotatedLeftY = (float) (Math.sin(angleInDegrees) * leftX + Math.cos(angleInDegrees) * leftY);
+        float rotatedLeftX = (float) (Math.cos(angleInRadians) * leftX - Math.sin(angleInRadians) * leftY);
+        float rotatedLeftY = (float) (Math.sin(angleInRadians) * leftX + Math.cos(angleInRadians) * leftY);
 
         //rotate to obtain new coordinates
 
