@@ -306,7 +306,7 @@ public class Robot {
         drive.newRotateTo(RobotDrive.RobotRotation.TOWARDS_WALL);
 //
         if (RED) {
-            drive.moveInchesRight(0.5, 3, 3000);
+            drive.moveInchesRight(0.5, 2, 3000);
         } else {
             drive.moveInchesLeft(0.5, 4.5, 3000);
         }
@@ -324,6 +324,8 @@ public class Robot {
         latch.latchUp();
         drive.newRotateTo(RobotDrive.RobotRotation.TOWARDS_DEPOT);
         drive.newAccelerateInchesForward(-2200, 75, RED ? 89 : 269, 6097);
+
+
 
         while (!drive.bottomColor.isOnTape()) {
             drive.driveForward(0.5);
@@ -719,7 +721,7 @@ public class Robot {
         switch (path) { // TODO: OR, we could go back to finding the tape line as we cross it and moving a set distance from there...
             case 3:
             case 2:
-                distance = (RED ? 67 : 65/*TODO*/);
+                distance = (RED ? 67 : 67/*TODO*/);
                 break;// TODO RED + 8?
 //            case 1 : distance = (RED ? 60  :60/*TODO*/); break;// TODO Need to think about this case carefully!
         }
@@ -727,7 +729,7 @@ public class Robot {
         switch (path) {
             case 3:
             case 2:
-                distance = (RED ? 13.5 : 15.5/*TODO*/);
+                distance = (RED ? 13.5 : 13.5/*TODO*/);
                 break; // TODO RED - 8?
 //            case 1 : distance = (RED ? 10.5  :0/*TODO*/); break; // TODO Need to think about this case carefully!
         }
