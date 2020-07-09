@@ -6,8 +6,8 @@
             <NeveRest40Gearmotor name="elbowMotor" port="1" />
             <Servo name="grabberServo" port="1" />
             <Servo name="wristServo" port="3" />
-            <DigitalDevice name="baseLimit" port="0" />
-            <DigitalDevice name="elbowLimit" port="2" />
+            <DigitalDevice name="baseLimit" port="1" />
+            <DigitalDevice name="elbowLimit" port="3" />
             <LynxEmbeddedIMU name="imu" port="0" bus="0" />
         </LynxModule>
     </LynxUsbDevice>
