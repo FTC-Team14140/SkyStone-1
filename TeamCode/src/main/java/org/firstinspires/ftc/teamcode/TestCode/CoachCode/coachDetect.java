@@ -57,7 +57,7 @@ public class coachDetect {
         // first.
         initVuforia();
 
-        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
+        if (true /*ClassFactory.getInstance().canCreateTFObjectDetector()*/) { // TODO: Seem like 5.5 changed someething here...
             initTfod();
         } else {
             telemetry.addData("Sorry!", "This device is not compatible with TFOD");

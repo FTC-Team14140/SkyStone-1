@@ -38,7 +38,7 @@ public class SkystoneDetector {
         teamUtil.log("Initializing Detector");
         initVuforia();
 
-        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
+        if (true /*ClassFactory.getInstance().canCreateTFObjectDetector()*/) { // TODO: Seem like 5.5 changed someething here...
             initTfod();
         } else {
             teamUtil.telemetry.addData("Sorry!", "This device is not compatible with TFOD");
